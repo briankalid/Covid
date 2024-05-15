@@ -1,0 +1,9 @@
+- name: Start LocalStack
+  uses: LocalStack/setup-localstack@main
+  with:
+    image-tag: 'latest'
+    install-awslocal: 'true'
+    use-pro: 'true'
+    configuration: DEBUG=1
+  env:
+    LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
