@@ -20,7 +20,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./deployment:/etc/nginx/user_conf.d:ro
+      - ./deployment:/etc/nginx/conf.d:ro
     depends_on:
       - app
     logging:
