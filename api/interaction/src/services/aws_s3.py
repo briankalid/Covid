@@ -8,7 +8,7 @@ class s3Controller:
     def __init__(self):
         self.s3 = boto3.client("s3")
 
-    async def upload_file(self, file, country, year):
+    def upload_file(self, file, country, year):
         filename = f"{country}_{year}.csv"
         # print(filename)
         print("cc",file,"asdas")
