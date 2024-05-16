@@ -31,3 +31,12 @@ jobs:
           push: true
           tags: briankalid/interaction-app:latest
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Start LocalStack
+        uses: LocalStack/setup-localstack@main
+        with:
+          image-tag: 'latest'
+          install-awslocal: 'true'
+          configuration: DEBUG=0
+          use-pro: 'true'
+        env:
+          LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
