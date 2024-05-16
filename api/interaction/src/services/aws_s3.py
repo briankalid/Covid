@@ -31,11 +31,13 @@ class s3Controller:
         query_params = query_params.model_dump(exclude_unset=True, exclude_defaults=True)
         print(query_params)
         if query_params["all"]:
+            country_objs = []
             for country in settings.COUNTRIES:
                 bucket = f"{country.lower()}-bucket-covidkalid"
                 print(bucket) 
                 objects = self.s3.list_objects(
                     Bucket=bucket)
+                country_objs.append(objects)
         else:
             bucket = query_params.get("bucket",None)
             objects = self.s3.list_objects(
