@@ -32,7 +32,7 @@ class s3Controller:
         print(query_params)
         if query_params["all"]:
             for country in settings.COUNTRIES:
-                bucket = f"{country.lower()}-bucket"
+                bucket = f"{country.lower()}-bucket-covidkalid"
                 print(bucket) 
                 objects = self.s3.list_objects(
                     Bucket=bucket)
