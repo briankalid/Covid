@@ -22,7 +22,7 @@ class FileFilterSchema(BaseModel):
 
         if values.get("country"):
             if values.get("country") in settings.COUNTRIES:
-                values["bucket"] = f"{values.get("country").lower()}-bucket"
+                values["bucket"] = f"{values.get("country").lower()}-bucket-covidkalid"
             else:
                 raise ValueError("Country not valid.")
 

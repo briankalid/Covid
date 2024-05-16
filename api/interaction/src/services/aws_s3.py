@@ -12,7 +12,7 @@ class s3Controller:
         filename = f"{country}_{year}.csv"
         # print(filename)
         print("cc",file,"asdas")
-        self.s3.upload_fileobj(file.file, f"{country.lower()}-bucket", filename)
+        self.s3.upload_fileobj(file.file, f"{country.lower()}-bucket-covidkalid", filename)
         print("exito")
 
 

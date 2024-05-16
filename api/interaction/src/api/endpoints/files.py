@@ -34,7 +34,7 @@ async def file_upload(file: UploadFile = File(...), country: str = Form(...), ye
 
 @router.post("/file_exist")
 def validate_file_exist(country: str = Form(...), year: int = Form(...)):
-    bucket = f"{country.lower()}-bucket"
+    bucket = f"{country.lower()}-bucket-covidkalid"
     filename = f"{country}_{year}.csv"
     exist_file = s3controller.file_exist(bucket, filename)
     return EnvelopeResponse(status_code=200, data=exist_file)
