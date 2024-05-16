@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  app:
+    image: briankalid/interaction-app:latest
+    container_name: app
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "1"
+        max-size: "100k"
+
+  nginx:
+    restart: unless-stopped
+    image: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./deployment:/etc/nginx/user_conf.d:ro
+    depends_on:
+      - app
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100k"
+        max-file: "1"

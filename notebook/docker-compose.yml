@@ -1,0 +1,10 @@
+services:
+  sagemaker-notebook-container:
+    image: qtangs/sagemaker-notebook:python3
+    container_name: sagemaker-notebook-container
+    ports:
+      - 8888:8888
+    environment:
+      AWS_PROFILE: 'briankalid'
+    volumes:
+      - /mnt/c/Users/Kalid/.aws:/home/ec2-user/.aws:ro

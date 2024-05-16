@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        select {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #fileList {
+            margin-top: 10px;
+        }
+
+        #confirmationMessage {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form action="/v1/file/file_upload" method="post" enctype="multipart/form-data" id="uploadForm"
+            onsubmit="checkFileExistence(event)">
+            <label for="file">Choose file:</label>
+            <input type="file" id="file" name="files">
+            <div id="fileList"></div>
+
+            <label for="country">Select a country:</label>
+            <select id="country" name="country">
+                <option value="" disabled selected>Select a country...</option>
+                {% for country in countries %}
+                <option value="{{ country }}">{{ country }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Dropdown de años -->
+            <label for="year">Select a year:</label>
+            <select id="year" name="year">
+                <option value="" disabled selected>Select a year...</option>
+            </select>
+
+            <!-- Botón de submit -->
+            <button id="submitButton" type="submit">Submit</button>
+
+            <!-- Mensaje de carga -->
+            <div id="loadingMessage" style="display: none;">
+                <p>Loading...</p>
+            </div>
+
+            <!-- Mensaje de confirmación -->
+            <div id="confirmationMessage">
+                <p>El archivo relacionado con el año ya existe. ¿Desea sustituirlo?</p>
+                <button type="button" onclick="replaceFile()">Sí</button>
+                <button type="button" onclick="cancelSubmission()">No</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function showLoading() {
+            // Ocultar el botón de submit
+            document.getElementById('submitButton').style.display = 'none';
+            // Mostrar el mensaje de carga
+            document.getElementById('loadingMessage').style.display = 'block';
+        }
+
+        function resetForm() {
+            // Limpiar campos del formulario
+            document.getElementById('uploadForm').reset();
+
+            // Limpiar lista de archivos
+            var fileList = document.getElementById('fileList');
+            fileList.textContent = 'No files selected';
+
+            // Ocultar el mensaje de carga
+            document.getElementById('loadingMessage').style.display = 'none';
+            // Mostrar el botón de submit
+            document.getElementById('submitButton').style.display = 'block';
+        }
+
+        function checkFileExistence(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
+            var fileInput = document.getElementById('file');
+             // Obtener el primer archivo seleccionado
+            var country = document.getElementById('country').value;
+            var year = document.getElementById('year').value;
+
+            // Crear un objeto FormData para enviar datos al servidor
+            var formData = new FormData();
+            // formData.append('file', file);
+            formData.append('country', country);
+            formData.append('year', year);
+
+            // Hacer la solicitud AJAX al endpoint /v1/file/file_exist
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/v1/file/file_exist', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.data === true) {
+                        // El archivo ya existe, mostrar mensaje de confirmación
+                        document.getElementById('confirmationMessage').style.display = 'block';
+                    } else {
+                        var file = fileInput.files[0];
+                        formData.append('file', file);
+                        // El archivo no existe, enviar el archivo al endpoint /v1/file/file_upload
+                        submitFile(formData);
+                    }
+                }
+            };
+            xhr.send(formData); // Enviar el objeto FormData al endpoint /v1/file/file_exist
+        }
+
+
+        function submitFile(formData) {
+            // Hacer la solicitud AJAX al endpoint /v1/file/file_upload
+            showLoading();
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/v1/file/file_upload', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    // Manejar la respuesta del servidor si es necesario
+                    if (xhr.status === 200) {
+                        // Si la solicitud se completó correctamente
+                        alert('Archivo enviado con éxito.');
+                        resetForm();
+                    } else {
+                        // Si hubo un error en la solicitud
+                        alert('Error al enviar el archivo.');
+                        resetForm();
+                    }
+                }
+            };
+            xhr.send(formData); // Enviar el objeto FormData al endpoint /v1/file/file_upload
+        }
+
+        function replaceFile() {
+            // Ocultar el mensaje de confirmación
+            document.getElementById('confirmationMessage').style.display = 'none';
+
+            // Mostrar el mensaje de carga
+            showLoading();
+
+            // Preparar los datos del formulario para enviar
+            var formData = new FormData(document.getElementById('uploadForm'));
+            var fileInput = document.getElementById('file')
+            var file = fileInput.files[0];
+            formData.append('file', file);
+
+            // Hacer la solicitud AJAX al endpoint /v1/file/file_upload
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/v1/file/file_upload', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    // Manejar la respuesta del servidor si es necesario
+                    if (xhr.status === 200) {
+                        // Si la solicitud se completó correctamente
+                        alert('Archivo enviado con éxito.');
+                        resetForm();
+                    } else {
+                        // Si hubo un error en la solicitud
+                        alert('Error al enviar el archivo.');
+                        resetForm();
+                    }
+                }
+            };
+            xhr.send(formData); // Enviar el objeto FormData al endpoint /v1/file/file_upload
+        }
+
+
+        function cancelSubmission() {
+            // Ocultar el mensaje de confirmación
+            document.getElementById('confirmationMessage').style.display = 'none';
+        }
+
+        document.getElementById('file').addEventListener('change', function (e) {
+            var fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            for (var i = 0; i < e.target.files.length; i++) {
+                var fileName = document.createElement('p');
+                fileName.textContent = 'File: ' + e.target.files[i].name;
+                fileList.appendChild(fileName);
+            }
+        });
+
+        // Llenar el dropdown de años desde 2019 hasta el año actual
+        var currentYear = new Date().getFullYear();
+        var selectYear = document.getElementById('year');
+        for (var i = 2019; i <= currentYear; i++) {
+            var option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectYear.appendChild(option);
+        }
+
+        window.addEventListener('load', function () {
+            // Limpiar campos del formulario
+            document.getElementById('uploadForm').reset();
+
+            // Limpiar lista de archivos
+            var fileList = document.getElementById('fileList');
+            fileList.textContent = 'No files selected';
+        });
+    </script>
+</body>
+
+</html>
