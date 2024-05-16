@@ -5,7 +5,7 @@ services:
     image: briankalid/interaction-app:latest
     container_name: app
     ports:
-      - "9000:9000"
+      - "8000:8000"
     restart: unless-stopped
     logging:
       driver: "json-file"
