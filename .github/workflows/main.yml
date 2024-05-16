@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./api/interaction
-          file: ./Dockerfile
+          file: ./api/interaction/Dockerfile
           push: true
           tags: briankalid/interaction-app:latest
           labels: ${{ steps.meta.outputs.labels }}
