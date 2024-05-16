@@ -22,12 +22,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: olayinkaadebisi/fastapiwithnginx
+          images: briankalid/interaction-app
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: olayinkaadebisi/fastapiwithnginx:latest
+          tags: briankalid/interaction-app:latest
           labels: ${{ steps.meta.outputs.labels }}
