@@ -6,7 +6,7 @@ from schemas.file_filter import FileFilterSchema
 
 class s3Controller:
     def __init__(self):
-        self.s3 = boto3.client("s3",endpoint_url=settings.AWS_ENPOINT_URL)
+        self.s3 = boto3.client("s3")
 
     async def upload_file(self, file, country, year):
         filename = f"{country}_{year}.csv"
