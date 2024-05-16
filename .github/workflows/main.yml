@@ -36,16 +36,21 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/development' }}
     needs: [build_and_push]
+    env:
+      MY_SECRET_ENV_VAR: ${{ secrets.ENV_VARS }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Configurar Docker Compose
+        run: |
+          echo "$MY_SECRET_ENV_VAR" >>.env
       - name: copy file via ssh key
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY  }}
-          source: "./api/interaction/docker-compose.yml, ./api/interaction/deployment/nginx.conf"
+          source: ".env ./api/interaction/docker-compose.yml, ./api/interaction/deployment/nginx.conf"
           target: .
       - name: run docker-compose
         uses: appleboy/ssh-action@v1.0.0
