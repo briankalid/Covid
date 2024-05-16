@@ -50,7 +50,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY  }}
-          source: ".env, ./api/interaction/docker-compose.yml, ./api/interaction/deployment/nginx.conf"
+          source: ".env, ./api/interaction/docker-compose.yml, ./api/interaction/deployment/default.conf"
           target: .
       - name: run docker-compose
         uses: appleboy/ssh-action@v1.0.0
