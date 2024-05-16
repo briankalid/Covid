@@ -35,13 +35,12 @@ class s3Controller:
                 bucket = f"{country.lower()}-bucket" 
                 objects = self.s3.list_objects(
                     Bucket=bucket)
-                
-                print(bucket)
-                print(objects)
         else:
             bucket = query_params.get("bucket",None)
             objects = self.s3.list_objects(
                     Bucket=bucket)
+            
+        return objects
 
 
 s3controller = s3Controller()
