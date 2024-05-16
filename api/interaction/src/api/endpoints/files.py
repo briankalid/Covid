@@ -41,6 +41,7 @@ def validate_file_exist(country: str = Form(...), year: int = Form(...)):
 
 @router.get("/list")
 def get_list_files(request: Request, query_params: FileFilterSchema = Depends()):
-    s3controller.get_list_files_by_filter(query_params)
+    files = s3controller.get_list_files_by_filter(query_params)
+    return files
     # for country in settings.COUNTRIES:
     #     bucket = f"{country.lower()}-bucket"
