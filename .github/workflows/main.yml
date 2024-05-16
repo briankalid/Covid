@@ -54,10 +54,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY  }}
           script: |
-            echo $(ls -lah)
-            echo $(ls -lah ..)
             cd ./api/interaction/
-            echo $(ls -la)
             docker-compose down
             docker rmi -f $(docker images -q)
             docker-compose pull
