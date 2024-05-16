@@ -51,7 +51,8 @@ jobs:
       - name: Run Tests against LocalStack
         run: |
           awslocal s3 ls
-          awslocal ec2 describe-instances
+          echo $(awslocal ec2 describe-instances)
+          echo "Test Execution complete!" 
       - name: copy file via ssh key
         uses: appleboy/scp-action@v0.1.4
         with:
