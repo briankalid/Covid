@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - type: bind
-        source: ./.env
+        source: ~/.env
         target: /src/src/core/.env
         read_only: true
     logging:
