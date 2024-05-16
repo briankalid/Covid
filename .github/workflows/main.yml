@@ -48,6 +48,10 @@ jobs:
           LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_API_KEY }}
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Run Tests against LocalStack
+        run: |
+          awslocal s3 ls
+          awslocal ec2 describe-instances
       - name: copy file via ssh key
         uses: appleboy/scp-action@v0.1.4
         with:
