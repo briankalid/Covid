@@ -31,6 +31,12 @@ jobs:
           push: true
           tags: briankalid/interaction-app:latest
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/development' }}
+    needs: [build_and_push]
+    steps:
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@main
         with:
@@ -40,12 +46,6 @@ jobs:
           use-pro: 'true'
         env:
           LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_API_KEY }}
-
-  deploy:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/development' }}
-    needs: [build_and_push]
-    steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: copy file via ssh key
