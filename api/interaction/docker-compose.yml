@@ -11,6 +11,7 @@ services:
       - type: bind
         source: ./.env
         target: /src/src/core/.env
+        read_only: true
     logging:
       driver: "json-file"
       options:
