@@ -37,15 +37,6 @@ jobs:
     if: ${{ github.ref == 'refs/heads/development' }}
     # needs: [build_and_push]
     steps:
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@main
-        with:
-          image-tag: 'latest'
-          install-awslocal: 'true'
-          configuration: DEBUG=0
-          use-pro: 'true'
-        env:
-          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_API_KEY }}
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Run Tests against LocalStack
