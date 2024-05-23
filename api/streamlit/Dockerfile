@@ -3,7 +3,7 @@ FROM python:3.12
 RUN apt-get update && \
 pip install -U poetry
 
-RUN apt-get install postgresql postgresql-client postgresql-contrib postgresql-client-common postgresql-common
+RUN apt-get -y install postgresql postgresql-client postgresql-contrib postgresql-client-common postgresql-common
 RUN service postgresql start
 
 WORKDIR /src
