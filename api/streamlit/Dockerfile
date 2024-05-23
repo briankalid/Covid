@@ -3,8 +3,6 @@ FROM python:3.12
 RUN apt-get update && \
 pip install -U poetry
 
-RUN apt-get -y install postgresql postgresql-client postgresql-contrib postgresql-client-common postgresql-common
-
 WORKDIR /src
 
 COPY ./* /tmp/
@@ -18,4 +16,4 @@ COPY . .
 
 EXPOSE 8501
 
-CMD service postgresql start && streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableWebsocketCompression=false
+CMD ["streamlit", "run", "dashboard.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless=true", "--server.enableCORS=false", "--server.enableWebsocketCompression=false"]

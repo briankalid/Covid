@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pandas_redshift as pr
+from datetime import datetime
 import time
 import os
 from dotenv import load_dotenv
@@ -29,12 +30,9 @@ def get_data():
     pr.close_up_shop()
     return df
 
-print(1)
 df = get_data()
-print(2)
 
 st.title("Real-Time / Live Covid19 Dashboard")
-
 
 st.sidebar.subheader('Ubicacion')
 country_filter = st.sidebar.multiselect("Select the country", pd.unique(df["country"]), default=pd.unique(df["country"]))
@@ -49,8 +47,9 @@ line_chart_placeholder = st.empty()
 map_placeholder = st.empty()
 
 while True:
+    print(datetime.now(), "init get_data")
     df = get_data()
-    print(df)
+    print(datetime.now(), "init graphic")
     filtered_df = df[(df["country"].isin(country_filter)) & 
                 (df["entidad_um"].isin(state_filter)) & 
                 (df["fecha_sintomas"] >= pd.to_datetime(start_date)) & 
@@ -64,4 +63,5 @@ while True:
     line_chart_placeholder.line_chart(data=df_line_chart)
     map_placeholder.map(data=df_map,latitude="latitud",longitude="longitud",size="positive_cases", use_container_width=True)
 
+    print(datetime.now(), "end graphic")
     time.sleep(10)
