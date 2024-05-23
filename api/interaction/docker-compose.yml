@@ -17,6 +17,23 @@ services:
       options:
         max-file: "1"
         max-size: "100k"
+  
+  streamlit-app:
+    image: briankalid/streamlit-app:latest
+    container_name: streamlit-app
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /home/ec2-user/.env
+        target: /src/.env
+        read_only: true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "1"
+        max-size: "100k"
 
   nginx:
     restart: unless-stopped
