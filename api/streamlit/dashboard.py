@@ -29,9 +29,9 @@ def get_data():
     pr.close_up_shop()
     return df
 
-
+print(1)
 df = get_data()
-
+print(2)
 
 st.title("Real-Time / Live Covid19 Dashboard")
 
@@ -50,6 +50,7 @@ map_placeholder = st.empty()
 
 while True:
     df = get_data()
+    print(df)
     filtered_df = df[(df["country"].isin(country_filter)) & 
                 (df["entidad_um"].isin(state_filter)) & 
                 (df["fecha_sintomas"] >= pd.to_datetime(start_date)) & 
