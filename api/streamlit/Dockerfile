@@ -4,7 +4,6 @@ RUN apt-get update && \
 pip install -U poetry
 
 RUN apt-get -y install postgresql postgresql-client postgresql-contrib postgresql-client-common postgresql-common
-RUN service postgresql start
 
 WORKDIR /src
 
@@ -19,4 +18,4 @@ COPY . .
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "dashboard.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless=true", "--server.enableCORS=false", "--server.enableWebsocketCompression=false"]
+CMD service postgresql start && streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableWebsocketCompression=false
