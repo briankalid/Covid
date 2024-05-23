@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de Buckets S3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #007bff;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+        }
+
+        .bucket {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .bucket h2 {
+            margin-top: 0;
+            color: #007bff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bucket h2::after {
+            content: '▶';
+            /* Flecha hacia la derecha */
+            font-size: 0.8em;
+        }
+
+        .bucket h2.collapsed::after {
+            content: '▼';
+            /* Flecha hacia abajo */
+        }
+
+        .bucket-info {
+            margin-top: 10px;
+        }
+
+        .bucket-info p {
+            margin: 5px 0;
+        }
+
+        .files {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .files p {
+            margin: 5px 0;
+        }
+
+        .download-btn {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/v1/file/file_form">Subir archivo</a>
+        <a href="/v1/file/repository">Repositorio</a>
+    </div>
+
+    <div class="container">
+        <h1>Información de Buckets S3</h1>
+        <div id="buckets"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/v1/file/list') // Reemplaza con la URL de tu endpoint FastAPI
+                .then(response => response.json())
+                .then(data => {
+                    const bucketsContainer = document.getElementById('buckets');
+                    data.forEach(bucket => {
+                        const bucketDiv = document.createElement('div');
+                        bucketDiv.classList.add('bucket');
+                        bucketDiv.innerHTML = `
+                            <h2 onclick="toggleBucket(this)">${bucket.Name}</h2>
+                            <div class="bucket-info">
+                                <p><strong>Región:</strong> ${bucket.ResponseMetadata.HTTPHeaders['x-amz-bucket-region']}</p>
+                                <p><strong>Archivos:</strong> ${bucket.Contents.length}</p>
+                                <div class="files">
+                                ${bucket.Contents.map(file => `
+                                    <p>${file.Key} - ${file.Size} bytes 
+                                    <button class="download-btn" onclick="downloadFile('${bucket.Name}', '${file.Key}')">Descargar</button>
+                                    </p>
+                                `).join('')}
+                                </div>
+                                    
+                            </div>
+                        `;
+                        bucketsContainer.appendChild(bucketDiv);
+                    });
+                })
+                .catch(error => console.error('Error al cargar los buckets:', error));
+        });
+
+        function toggleBucket(arrow) {
+            const filesDiv = arrow.nextElementSibling.querySelector('.files');
+            if (filesDiv.style.display === 'none') {
+                filesDiv.style.display = 'block';
+                arrow.classList.add('collapsed');
+            } else {
+                filesDiv.style.display = 'none';
+                arrow.classList.remove('collapsed');
+            }
+        }
+
+        function downloadFile(bucket, key) {
+            window.location.href = `/v1/file/download?bucket=${bucket}&key=${key}`;
+        }
+    </script>
+</body>
+
+</html>
+``

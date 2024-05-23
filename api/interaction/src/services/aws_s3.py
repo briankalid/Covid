@@ -45,5 +45,9 @@ class s3Controller:
             
         return objects
 
+    def get_objects(self,bucket,key):
+        response = self.s3.get_object(Bucket=bucket, Key=key)
+        file_content = response['Body'].read()
+        return file_content
 
 s3controller = s3Controller()

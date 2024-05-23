@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, BackgroundTasks, UploadFile, File, Form, Depends
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import StreamingResponse
 from typing import List
 
 from core.settings import settings
@@ -45,3 +46,18 @@ def get_list_files(request: Request, query_params: FileFilterSchema = Depends())
     return files
     # for country in settings.COUNTRIES:
     #     bucket = f"{country.lower()}-bucket"
+
+@router.get("/repository")
+def get_repository(request: Request):
+    return templates.TemplateResponse(
+        "repository.html",
+        {
+            "request": request,
+            "countries": settings.COUNTRIES
+        }
+    )
+
+@router.get("/download")
+def get_repository(bucket: str, key: str):
+    file = s3controller.get_objects(bucket,key)
+    return StreamingResponse(content=iter([file]), media_type='application/octet-stream', headers={"Content-Disposition": f"attachment; filename={key}"})
