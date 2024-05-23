@@ -31,7 +31,20 @@ jobs:
           push: true
           tags: briankalid/interaction-app:latest
           labels: ${{ steps.meta.outputs.labels }}
-
+      - name: Extract metadata (labels, tags, etc.) for Docker
+        id: meta2
+        uses: docker/metadata-action@v5
+        with:
+          images: briankalid/streamlit-app
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api/streamlit
+          file: ./api/streamlit/Dockerfile
+          push: true
+          tags: briankalid/streamlit-app:latest
+          labels: ${{ steps.meta2.outputs.labels }}
+          
   deploy:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/development' }}
